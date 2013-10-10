@@ -8,7 +8,7 @@ package org.marcel.web.zerotohero.util;
  *
  * @author Marcel
  */
-interface Serializer  {
+public interface Serializer  {
     
     String createString(Object pojo);
 }
