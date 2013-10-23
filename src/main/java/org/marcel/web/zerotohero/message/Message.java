@@ -4,24 +4,47 @@
  */
 package org.marcel.web.zerotohero.message;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  *
  * @author Marcel
  */
-public class Message {
+public class Message implements Serializable{
 
-    private HashMap<String,String> metaKeys = new HashMap<String,String>();
+       
+    private String resourcePath;
     
-    private String payLoadType;
-    private String payLoad; 
+    private String payLoad;  
     
-    public void addMetaKey(String key, String value) {
-        metaKeys.put(key, value);
+    private String typeOfPayLoad; 
+     
+    public Message() {}
+
+    public String getResourcePath() {
+        return resourcePath;
     }
-    
-    public String getMetaValue(String key) {
-        return metaKeys.get(key);
+
+    public void setResourcePath(String resourcePath) {
+        this.resourcePath = resourcePath;
     }
+
+    public String getPayLoad() {
+        return payLoad;
+    }
+
+    public void setPayLoad(String payLoad) {
+        this.payLoad = payLoad;
+    }
+
+    public String getTypeOfPayLoad() {
+        return typeOfPayLoad;
+    }
+
+    public void setTypeOfPayLoad(String typeOfPayLoad) {
+        this.typeOfPayLoad = typeOfPayLoad;
+    }
+     
+    
 }

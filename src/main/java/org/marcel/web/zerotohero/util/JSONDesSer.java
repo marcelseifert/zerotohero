@@ -21,16 +21,18 @@ import org.slf4j.Logger;
  */
 public class JSONDesSer<T> implements Deserializer<T>, Serializer {
 
-    private static ObjectMapper mapper = new ObjectMapper();
-    private static JsonFactory jf = new JsonFactory();
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final JsonFactory jf = new JsonFactory();
 
-    private static Logger log = LoggerFactory.getLogger(JSONDesSer.class);
+    private static final Logger log = LoggerFactory.getLogger(JSONDesSer.class);
     
     @Override
     public T createFromString(String content, Class<T> classType) {
-        try { 
+        if( content == null) return null;
+        if( isPrimitiv(classType) ) return createPrimitive(content,classType);
+        try {  
             return mapper.readValue(content, classType);
-        } catch (JsonMappingException | JsonParseException   ex ) {
+        } catch (JsonMappingException | JsonParseException   ex ) { 
             log.error("Fehler",ex);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(JSONDesSer.class.getName()).log(Level.SEVERE, null, ex);
@@ -52,5 +54,17 @@ public class JSONDesSer<T> implements Deserializer<T>, Serializer {
         }
         return null;
     }
+
+    private boolean isPrimitiv(Class<T> classType) { 
+       if( classType.getName().equalsIgnoreCase(String.class.getName() ) ) return true;
+       return false;
+    }
+
+    private T createPrimitive(String content,Class<T> classType) {
+         if( classType.getName().equalsIgnoreCase(String.class.getName() ) ) {
+              return (T)content;
+          }
+          return null;
+      }
     
 }
