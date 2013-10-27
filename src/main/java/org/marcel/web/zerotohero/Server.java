@@ -47,7 +47,7 @@ public class Server {
 
     public void run() throws Exception {
 
-        ZMQ.Context context = ZMQ.context(1);
+        ZMQ.Context context = ZMQ.context(1000);
         //  Socket to talk to clients
         ZMQ.Socket socket = context.socket(ZMQ.REP);
         socket.bind("tcp://*:5555");
@@ -58,8 +58,7 @@ public class Server {
             Message m = desMessage.createFromString( new String(reply,"UTF-8"), Message.class);
             m.setPayLoad( informHandler(m) );
             String request = serMessage.createString(m);
-            socket.send(request.getBytes(), 0);
-            Thread.sleep(1000); //  Do some 'work'
+            socket.send(request.getBytes(), 0); 
         }
         socket.close();
         context.term();
@@ -105,15 +104,12 @@ public class Server {
 
     private String informHandler(Message m) {
         String result = null;
-        try {
-            log.debug("search for "+m.getResourcePath());
+        try { 
             Object handler = queue.get(m.getResourcePath());
-            if( handler != null) {
-                log.debug("inform handler "+handler.getClass());
+            if( handler != null) { 
                 Object payLoad = new JSONDesSer<>().createFromString(m.getPayLoad(), (Class<Object>) Class.forName(m.getTypeOfPayLoad()));
-                 result =  new JSONDesSer().createString(invokeMethod(m.getResourcePath(), handler, payLoad));
-                 log.debug("informHandler Result? "+result);
-            }
+                result =  new JSONDesSer().createString(invokeMethod(m.getResourcePath(), handler, payLoad));
+             }
         } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             log.error(e.getMessage());
         }
